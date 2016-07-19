@@ -9,17 +9,21 @@ curr_device = hids[int(current_hid[0])-1]
 
 buttonmaps = {'0xbead': {'port': 0, 'lsx': 2, 'lsy': 6, 'lt': 10, 'csx': 14, 'csy': 18, 'rt': 22, 'buttons': 49, 'dpad': 50}}
 
-#gamecube
-#[port, ?, Lsx, ?, ?, ?, -Lsy, ?, ?, ?, Lt, ?, ?, ?, Cx, ?, ?, ?, -Cy, ?, ?, ?, Rt, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, buttonval, dpadval, ???...]
-#[1, 130, 62, 0, 0, 255, 63, 0, 0, 97, 15, 0, 0, 3, 62, 0, 0, 1, 63, 0, 0, 99, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+def handle(rawdata, xargs=(None, None)):
+    data = rawdata
+    product_id = hex(xargs[0])
+    buttons = xargs[1]
+    del xargs
+    if not buttons:
+        print(data)
+    else:
+        for button in buttons:
+            print(button, data[buttonmaps[product_id][button]], end=' -- ')
+        print()
 
 
-def handle(data):
-    print(data)
-
-
-def test_device(device):
-    #test your device
+def test_device(device, buttons=None):
     try:
         if device.is_plugged():
             print('device is detected')
@@ -27,9 +31,8 @@ def test_device(device):
             print('device opened successfully')
             input('press enter to start recieving input after 3 seconds.')
             sleep(3)
-            device.set_raw_data_handler(handle)
+            device.set_raw_data_handler(handle, (device.product_id, buttons))
             while device.is_plugged():
-                #this goes on while the device is plugged in and program is running
                 sleep(1)
         else:
             print('device is not detected')
@@ -37,4 +40,4 @@ def test_device(device):
         device.close()
         print('device closed successfully')
 
-test_device(curr_device)
+test_device(curr_device, ('lsx', 'lsy', 'lt', 'rt', 'csx', 'csy', 'buttons', 'dpad'))
