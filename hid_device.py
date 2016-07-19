@@ -7,7 +7,7 @@ with open('curr_hid.txt', 'r') as curr_hid:
     current_hid = curr_hid.readline().split(',')
 curr_device = hids[int(current_hid[0])-1]
 
-buttonmaps = {'0xbead': {'port': 0, 'lsx': 2, 'lsy': 6, 'lt': 10, 'csx': 14, 'csy': 18, 'rt': 22, 'buttons': 49, 'dpad': 50}}
+buttonmaps = {'0xbead': {'port': 0, 'lsx': 2, 'lsy': 6, 'lt': 10, 'csx': 14, 'csy': 18, 'rt': 22, 'buttons': (49, True), 'dpad': (50, True)}}
 
 
 def handle(rawdata, xargs=(None, None)):
@@ -18,9 +18,15 @@ def handle(rawdata, xargs=(None, None)):
     if not buttons:
         print(data)
     else:
+        s = ''
         for button in buttons:
-            print(button, data[buttonmaps[product_id][button]], end=' -- ')
-        print()
+            s += button+', '
+            buttondata = buttonmaps[product_id][button]
+            if type(buttondata) == int:
+                s += str(data[buttondata])+' -- '
+            else:
+                s += bin(data[buttondata[0]])[2:]+' -- '
+        print(s)
 
 
 def test_device(device, buttons=None):
@@ -40,4 +46,4 @@ def test_device(device, buttons=None):
         device.close()
         print('device closed successfully')
 
-test_device(curr_device, ('lsx', 'lsy', 'lt', 'rt', 'csx', 'csy', 'buttons', 'dpad'))
+test_device(curr_device, ('dpad',))
