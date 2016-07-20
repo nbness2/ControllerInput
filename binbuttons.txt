@@ -2,10 +2,10 @@
 
 ##BUTTONS
 ###0 0 0 0 0 0 0 0
-###A B X Y Z R L S
+###S L R Z Y X B A
 
 ##DPAD
 ###0 0 0 0
-###U D L R
+###R L D U
 
 
