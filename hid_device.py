@@ -10,6 +10,33 @@ curr_device = hids[int(current_hid[0])-1]
 buttonmaps = {'0xbead': {'port': 0, 'lsx': 2, 'lsy': 6, 'lt': 10, 'csx': 14, 'csy': 18, 'rt': 22, 'buttons': (49, True), 'dpad': (50, True)}}
 
 
+class Axis:
+
+    def __init__(self, rdidx, dead_low, dead_high, digital=False, low_value='low', high_value='high', neutral_value='n/a'):
+        self.rdidx = rdidx
+        self.digital = digital
+        if self.digital:
+            self.dead_low = dead_low
+            self.dead_high = dead_high
+            self.low_value = low_value
+            self.high_value = high_value
+            self.neutral_value = neutral_value
+
+    def update(self, value):
+        if self.digital:
+        #updates the value and then returns a value based on the update
+            if value >= self.dead_high:
+                return self.high_value
+            elif value <= self.dead_low:
+                return self.low_value
+            else:
+                return self.neutral_value
+        else:
+            return value
+
+
+
+
 def handle(rawdata, xargs=(None, None)):
     data = rawdata
     product_id = hex(xargs[0])
