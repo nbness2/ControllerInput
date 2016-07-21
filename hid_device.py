@@ -12,7 +12,7 @@ curr_device = hids[int(current_hid[0])-1]
 class Stick:
 
     def __init__(self, rdidx_x, rdidx_y, dead_zones_x, dead_zones_y, digital_xy=(False, False), low_xy=('low', 'low'),
-                 high_xy=('high', 'high'), neutral_xy=('n/a', 'n/a')):
+                 high_xy=('high', 'high'), neutral_xy=('n/a', 'n/a'), c_name='stick'):
         self.rdidx_x = rdidx_x
         self.rdidx_y = rdidx_y
         self.dead_low_x, self.dead_high_x = dead_zones_x
@@ -50,14 +50,11 @@ class Stick:
 
 class Buttons:
 
-    def __init__(self, rdidx, button_values, digital=True, c_name=None):
+    def __init__(self, rdidx, button_values, digital=True, c_name='buttons'):
         self.rdidx = rdidx
         self.button_values = button_values
         self.digital = digital
-        if c_name:
-            self.c_name = c_name
-        else:
-            self.c_name = 'unidentified'
+        self.c_name = c_name
         #should be tuple\list with button_count entries. little -> big ordered
 
     def update(self, value):
@@ -77,8 +74,12 @@ class Buttons:
                 raise IOError('Extra button(s) detected. {}'.format(self.c_name))
 
 
-buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66)), 'lt': Buttons(10, ['lt'], False), 'rt': Buttons(22, ['rt'], False),
-                         'cs': Stick(14, 18, (60, 66), (60, 65)), 'buttons': Buttons(49, 'abxyzrls'), 'dpad': Buttons(50, 'udlr')}}
+buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
+                         'lt': Buttons(10, ['lt'], False, c_name='Left Trigger'),
+                         'rt': Buttons(22, ['rt'], False, c_name='Right Trigger'),
+                         'cs': Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick'),
+                         'buttons': Buttons(49, 'abxyzrls', c_name='abxyzrls Buttons'),
+                         'dpad': Buttons(50, 'udlr', c_name='D-pad')}}
 
 gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
 
