@@ -77,10 +77,10 @@ class Buttons:
                 raise IOError('Extra button(s) detected. {}'.format(self.c_name))
 
 
-buttonmaps = {'0xbead': {'lsx': Axis(2, 58, 68), 'lsy': Axis(6, 58, 67), 'lt': Axis(10, 10, 105), 'rt': Axis(22, 10, 105),
-                         'csx': Axis(14, 59, 67), 'csy': Axis(18, 59, 68), 'buttons': Buttons(49, 'abxyzrl'), 'dpad': Buttons(50, 'udlr')}}
+buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66)), 'lt': Buttons(10, ['lt'], False), 'rt': Buttons(22, ['rt'], False),
+                         'cs': Stick(14, 18, (60, 66), (60, 65)), 'buttons': Buttons(49, 'abxyzrls'), 'dpad': Buttons(50, 'udlr')}}
 
-gcbuttons = ('lsx', 'lsy', 'lt', 'rt', 'csx', 'csy', 'buttons', 'dpad')
+gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
 
 
 def handle(rawdata, xargs=(None, None)):
@@ -95,13 +95,16 @@ def handle(rawdata, xargs=(None, None)):
         for button in buttons:
             s += button+', '
             component = buttonmaps[product_id][button]
-            idx = component.rdidx
             if type(component) == Buttons:
-                s += 'buttons: '+''.join(b for b in component.update(bin(data[idx])[2:]))
-            elif type(component) == Axis:
-                s += str(component.update(data[idx]))
+                idx = component.rdidx
+                if component.digital:
+                    s += 'buttons: '+''.join(b for b in component.update(bin(data[idx])[2:]))
+                else:
+                    s += str(component.update(data[idx]))
+            elif type(component) == Stick:
+                idx_x, idx_y = component.rdidx_x, component.rdidx_y
+                s += str(component.update((data[idx_x], data[idx_y])))
             s += ' -- '
-            del idx
         print(s[:-4])
 
 
