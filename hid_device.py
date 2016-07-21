@@ -50,25 +50,31 @@ class Stick:
 
 class Buttons:
 
-    def __init__(self, rdidx, button_values):
+    def __init__(self, rdidx, button_values, digital=True, c_name=None):
         self.rdidx = rdidx
         self.button_values = button_values
+        self.digital = digital
+        if c_name:
+            self.c_name = c_name
+        else:
+            self.c_name = 'unidentified'
         #should be tuple\list with button_count entries. little -> big ordered
 
     def update(self, value):
-        try:
-            pressed = []
-            for idx, button in enumerate(value[::-1]):
-                if int(button):
-                    pressed.append(self.button_values[idx])
-            if not len(pressed):
-                return ['n/a']
-            elif len(pressed) == 1:
-                return pressed[0]
-            else:
-                return pressed
-        except IndexError:
-            raise IOError('Extra button(s) detected.')
+        if not self.digital:
+            return value
+        else:
+            try:
+                pressed = []
+                for idx, button in enumerate(value[::-1]):
+                    if int(button):
+                        pressed.append(self.button_values[idx])
+                if not len(pressed):
+                    return ['n/a']
+                else:
+                    return pressed
+            except IndexError:
+                raise IOError('Extra button(s) detected. {}'.format(self.c_name))
 
 
 buttonmaps = {'0xbead': {'lsx': Axis(2, 58, 68), 'lsy': Axis(6, 58, 67), 'lt': Axis(10, 10, 105), 'rt': Axis(22, 10, 105),
