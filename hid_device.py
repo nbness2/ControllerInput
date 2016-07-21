@@ -70,15 +70,17 @@ def handle(rawdata, xargs=(None, None)):
         s = ''
         for button in buttons:
             s += button+', '
-            buttondata = buttonmaps[product_id][button]
-            if type(buttondata) == int:
-                s += str(data[buttondata])+' -- '
-            else:
-                s += bin(data[buttondata[0]])[2:]+' -- '
-        print(s)
-
-
 def test_device(device, buttons=None):
+            component = buttonmaps[product_id][button]
+            idx = component.rdidx
+            if type(component) == Buttons:
+                s += 'buttons: '+''.join(b for b in component.update(bin(data[idx])[2:]))
+            elif type(component) == Axis:
+                s += str(component.update(data[idx]))
+            s += ' -- '
+            del idx
+        print(s[:-4])
+
     try:
         if device.is_plugged():
             print('device is detected')
