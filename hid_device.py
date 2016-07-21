@@ -35,6 +35,28 @@ class Axis:
             return value
 
 
+class Buttons:
+
+    def __init__(self, rdidx, button_values):
+        self.rdidx = rdidx
+        self.button_values = button_values
+        #should be tuple\list with button_count entries. little -> big ordered
+
+    def update(self, value):
+        try:
+            pressed = []
+            for idx, button in enumerate(value[::-1]):
+                if int(button):
+                    pressed.append(self.button_values[idx])
+            if not len(pressed):
+                return ['n/a']
+            elif len(pressed) == 1:
+                return pressed[0]
+            else:
+                return pressed
+        except IndexError:
+            raise IOError('Extra button(s) detected.')
+
 
 
 def handle(rawdata, xargs=(None, None)):
