@@ -58,6 +58,9 @@ class Buttons:
             raise IOError('Extra button(s) detected.')
 
 
+buttonmaps = {'0xbead': {'lsx': Axis(2, 58, 68), 'lsy': Axis(6, 58, 67), 'lt': Axis(10, 10, 105), 'rt': Axis(22, 10, 105),
+                         'csx': Axis(14, 59, 67), 'csy': Axis(18, 59, 68), 'buttons': Buttons(49, 'abxyzrl'), 'dpad': Buttons(50, 'udlr')}}
+
 
 def handle(rawdata, xargs=(None, None)):
     data = rawdata
