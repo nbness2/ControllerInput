@@ -9,29 +9,43 @@ with open('curr_hid.txt', 'r') as curr_hid:
 curr_device = hids[int(current_hid[0])-1]
 
 
-class Axis:
+class Stick:
 
-    def __init__(self, rdidx, dead_low, dead_high, digital=False, low_value='low', high_value='high', neutral_value='n/a'):
-        self.rdidx = rdidx
-        self.digital = digital
-        if self.digital:
-            self.dead_low = dead_low
-            self.dead_high = dead_high
-            self.low_value = low_value
-            self.high_value = high_value
-            self.neutral_value = neutral_value
+    def __init__(self, rdidx_x, rdidx_y, dead_zones_x, dead_zones_y, digital_xy=(False, False), low_xy=('low', 'low'),
+                 high_xy=('high', 'high'), neutral_xy=('n/a', 'n/a')):
+        self.rdidx_x = rdidx_x
+        self.rdidx_y = rdidx_y
+        self.dead_low_x, self.dead_high_x = dead_zones_x
+        self.dead_low_y, self.dead_high_y = dead_zones_y
+        self.digital_x, self.digital_y = digital_xy
+        self.low_x, self.low_y = low_xy
+        self.high_x, self.high_y = high_xy
+        self.neut_x, self.neut_y = neutral_xy
 
-    def update(self, value):
-        if self.digital:
-        #updates the value and then returns a value based on the update
-            if value >= self.dead_high:
-                return self.high_value
-            elif value <= self.dead_low:
-                return self.low_value
-            else:
-                return self.neutral_value
+    def update(self, value_xy):
+        xy = []
+        value_x, value_y = value_xy
+        del value_xy
+        if not self.digital_x:
+            xy.append(value_x)
         else:
-            return value
+            if value_x >= self.dead_high_x:
+                xy.append(self.high_x)
+            elif value_x <= self.dead_low_x:
+                xy.append(self.low_x)
+            else:
+                xy.append(self.neut_x)
+        del value_x
+        if not self.digital_y:
+            xy.append(value_y)
+        else:
+            if value_y >= self.dead_high_y:
+                xy.append(self.high_y)
+            elif value_y <= self.dead_low_y:
+                xy.append(self.low_y)
+            else:
+                xy.append(self.neut_y)
+        return tuple(xy)
 
 
 class Buttons:
