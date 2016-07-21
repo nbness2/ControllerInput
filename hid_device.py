@@ -73,6 +73,13 @@ class Buttons:
             except IndexError:
                 raise IOError('Extra button(s) detected. {}'.format(self.c_name))
 
+    def toggle_digital(self):
+        self.set_digital(not self.digital)
+
+    def set_digital(self, digital):
+        self.digital = bool(digital)
+
+
 
 buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
                          'lt': Buttons(10, ['lt'], False, c_name='Left Trigger'),
