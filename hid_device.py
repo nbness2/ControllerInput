@@ -73,7 +73,6 @@ def handle(rawdata, xargs=(None, None)):
         s = ''
         for button in buttons:
             s += button+', '
-def test_device(device, buttons=None):
             component = buttonmaps[product_id][button]
             idx = component.rdidx
             if type(component) == Buttons:
@@ -84,13 +83,13 @@ def test_device(device, buttons=None):
             del idx
         print(s[:-4])
 
+
+def device_test(device, buttons=None, delay=1):
     try:
         if device.is_plugged():
             print('device is detected')
             device.open()
             print('device opened successfully')
-            input('press enter to start recieving input after 3 seconds.')
-            sleep(3)
             device.set_raw_data_handler(handle, (device.product_id, buttons))
             while device.is_plugged():
                 sleep(1)
@@ -100,4 +99,4 @@ def test_device(device, buttons=None):
         device.close()
         print('device closed successfully')
 
-test_device(curr_device, ('dpad',))
+device_test(curr_device, gcbuttons)
