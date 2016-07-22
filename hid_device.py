@@ -49,7 +49,7 @@ class Stick:
         return tuple(xy)
 
 
-class Buttons:
+class Button:
 
     def __init__(self, rdidx, button_values, digital=True, c_name='buttons'):
         self.rdidx = rdidx
@@ -106,11 +106,12 @@ class Controller:
 
 
 buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
-                         'lt': Buttons(10, ['lt'], False, c_name='Left Trigger'),
-                         'rt': Buttons(22, ['rt'], False, c_name='Right Trigger'),
+                         'lt': Button(10, ['lt'], False, c_name='Left Trigger'),
+                         'rt': Button(22, ['rt'], False, c_name='Right Trigger'),
                          'cs': Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick'),
-                         'buttons': Buttons(49, 'abxyzrls', c_name='abxyzrls Buttons'),
-                         'dpad': Buttons(50, 'udlr', c_name='D-pad')}}
+                         'buttons': Button(49, 'abxyzrls', c_name='Buttons'),
+                         'dpad': Button(50, 'udlr', c_name='D-pad')}}
+
 controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
                                                      Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick')),
                                              Buttons=(Button(10, ['lt'], False, c_name='Left Trigger'),
