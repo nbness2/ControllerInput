@@ -105,25 +105,6 @@ class Controller:
         return data
 
 
-buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
-                         'lt': Button(10, ['lt'], False, c_name='Left Trigger'),
-                         'rt': Button(22, ['rt'], False, c_name='Right Trigger'),
-                         'cs': Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick'),
-                         'buttons': Button(49, 'abxyzrls', c_name='Buttons'),
-                         'dpad': Button(50, 'udlr', c_name='D-pad')}}
-
-controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
-                                                     Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick')),
-                                             Buttons=(Button(10, ['lt'], False, c_name='Left Trigger'),
-                                                      Button(22, ['rt'], False, c_name='Right Trigger'),
-                                                      Button(49, 'abxyzrls', c_name='Buttons'),
-                                                      Button(50, 'udlr', c_name='D-pad')),
-                                             c_name='Gamecube Controller',
-                                             product_id='0xbead')}
-
-gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
-
-
 def handle(rawdata, controller):
     data = rawdata
     print(controller.update(rawdata))
@@ -147,3 +128,23 @@ def device_test(device, controller, delay=1):
         print('device closed successfully')
 
 device_test(curr_device, gcbuttons)
+buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
+                         'lt': Button(10, ['lt'], False, c_name='Left Trigger'),
+                         'rt': Button(22, ['rt'], False, c_name='Right Trigger'),
+                         'cs': Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick'),
+                         'buttons': Button(49, 'abxyzrls', c_name='Buttons'),
+                         'dpad': Button(50, 'udlr', c_name='D-pad')}}
+
+controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
+                                                     Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick')),
+                                             Buttons=(Button(10, ['lt'], False, c_name='Left Trigger'),
+                                                      Button(22, ['rt'], False, c_name='Right Trigger'),
+                                                      Button(49, 'abxyzrls', c_name='Buttons'),
+                                                      Button(50, 'udlr', c_name='D-pad')),
+                                             c_name='Gamecube Controller',
+                                             product_id='0xbead')}
+
+gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
+
+if __name__ == '__main__':
+    pass
