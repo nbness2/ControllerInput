@@ -80,6 +80,27 @@ class Buttons:
         self.digital = bool(digital)
 
 
+class Controller:
+
+    def __init__(self, **kwargs):
+        self.components = {}
+        for arg, value in kwargs.items():
+            if arg in ['Sticks', 'Buttons']:
+                for component in value:
+                    self.components[component.c_name] = component
+            if arg in ['c_name', 'product_id']:
+                setattr(self, arg, value)
+
+    def update(self, rawdata):
+        data = {}
+        for component in self.components.values():
+            if type(component) == Stick:
+                udata = (rawdata[component.rdidx_x], rawdata[component.rdidx_y])
+            else:
+                udata = rawdata[component.rdidx]
+            data[component.c_name] = component.update(udata)
+        return data
+
 
 buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
                          'lt': Buttons(10, ['lt'], False, c_name='Left Trigger'),
@@ -87,6 +108,14 @@ buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stic
                          'cs': Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick'),
                          'buttons': Buttons(49, 'abxyzrls', c_name='abxyzrls Buttons'),
                          'dpad': Buttons(50, 'udlr', c_name='D-pad')}}
+controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
+                                                     Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick')),
+                                             Buttons=(Button(10, ['lt'], False, c_name='Left Trigger'),
+                                                      Button(22, ['rt'], False, c_name='Right Trigger'),
+                                                      Button(49, 'abxyzrls', c_name='Buttons'),
+                                                      Button(50, 'udlr', c_name='D-pad')),
+                                             c_name='Gamecube Controller',
+                                             product_id='0xbead')}
 
 gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
 
