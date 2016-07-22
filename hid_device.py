@@ -120,32 +120,12 @@ controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 
 gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
 
 
-def handle(rawdata, xargs=(None, None)):
+def handle(rawdata, controller):
     data = rawdata
-    product_id = hex(xargs[0])
-    buttons = xargs[1]
-    del xargs
-    if not buttons:
-        print(data)
-    else:
-        s = ''
-        for button in buttons:
-            s += button+', '
-            component = buttonmaps[product_id][button]
-            if type(component) == Buttons:
-                idx = component.rdidx
-                if component.digital:
-                    s += 'buttons: '+''.join(b for b in component.update(bin(data[idx])[2:]))
-                else:
-                    s += str(component.update(data[idx]))
-            elif type(component) == Stick:
-                idx_x, idx_y = component.rdidx_x, component.rdidx_y
-                s += str(component.update((data[idx_x], data[idx_y])))
-            s += ' -- '
-        print(s[:-4])
+    print(controller.update(rawdata))
 
 
-def device_test(device, buttons=None, delay=1):
+def device_test(device, controller, delay=1):
     try:
         if device.is_plugged():
             print('device is detected')
@@ -153,7 +133,7 @@ def device_test(device, buttons=None, delay=1):
             print('device opened successfully')
             print('recieving input after {} seconds.'.format(delay))
             sleep(delay)
-            device.set_raw_data_handler(handle, (device.product_id, buttons))
+            device.set_raw_data_handler(handle,  controller)
             while device.is_plugged():
                 sleep(1)
         else:
