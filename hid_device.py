@@ -21,6 +21,7 @@ class Stick:
         self.low_x, self.low_y = low_xy
         self.high_x, self.high_y = high_xy
         self.neut_x, self.neut_y = neutral_xy
+        self.c_name = c_name
 
     def update(self, value_xy):
         xy = []
@@ -63,6 +64,8 @@ class Buttons:
         else:
             try:
                 pressed = []
+                if type(value) == int:
+                    value = bin(value)[2:]
                 for idx, button in enumerate(value[::-1]):
                     if int(button):
                         pressed.append(self.button_values[idx])
