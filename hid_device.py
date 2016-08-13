@@ -94,20 +94,22 @@ class Controller:
             if arg in ['c_name', 'product_id', 'vendor_id']:
                 setattr(self, arg, value)
 
-    def update(self, rawdata):
+    def update(self, raw_data):
         data = {}
         for component in self.components.values():
             if type(component) == Stick:
-                udata = (rawdata[component.rdidx_x], rawdata[component.rdidx_y])
+                udata = (raw_data[component.rdidx_x], raw_data[component.rdidx_y])
             else:
-                udata = rawdata[component.rdidx]
+                udata = raw_data[component.rdidx]
             data[component.c_name] = component.update(udata)
         return data
 
 
-def handle(rawdata, controller):
-    data = rawdata
-    print(controller.update(rawdata))
+def handle(raw_data, controller=None):
+    if not controller:
+        print(raw_data)
+    else:
+        print(controller.update(raw_data))
 
 
 def device_test(device, controller, delay=1):
