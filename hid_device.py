@@ -1,6 +1,7 @@
 from pywinusb import hid
-from pyautogui import press, hotkey
 from time import sleep
+#from pyautogui import press, hotkey
+
 
 
 class Stick:
