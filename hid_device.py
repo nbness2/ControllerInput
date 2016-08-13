@@ -91,7 +91,7 @@ class Controller:
             if arg in ['Sticks', 'Buttons']:
                 for component in value:
                     self.components[component.c_name] = component
-            if arg in ['c_name', 'product_id']:
+            if arg in ['c_name', 'product_id', 'vendor_id']:
                 setattr(self, arg, value)
 
     def update(self, rawdata):
@@ -142,7 +142,8 @@ controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 
                                                       Button(49, 'abxyzrls', c_name='Buttons'),
                                                       Button(50, 'udlr', c_name='D-pad')),
                                              c_name='Gamecube Controller',
-                                             product_id='0xbead')}
+                                             product_id='0xbead',
+                                             vendor_id='0x1234')}
 
 gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
 
