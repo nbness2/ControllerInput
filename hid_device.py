@@ -3,12 +3,6 @@ from pyautogui import press, hotkey
 from time import sleep
 
 
-hids = hid.find_all_hid_devices()
-with open('curr_hid.txt', 'r') as curr_hid:
-    current_hid = curr_hid.readline().split(',')
-curr_device = hids[int(current_hid[0])-1]
-
-
 class Stick:
 
     def __init__(self, rdidx_x, rdidx_y, dead_zones_x, dead_zones_y, digital_xy=(False, False), low_xy=('low', 'low'),
@@ -112,7 +106,31 @@ def handle(raw_data, controller=None):
         print(controller.update(raw_data))
 
 
-def device_test(device, controller, delay=1):
+def find_device(vID=None, pID=None, result=None):
+    hids = hid.find_all_hid_devices()
+    if not vID and not pID:
+        for idx, device in enumerate(hids):
+            print('\t{}:\t{}  -  {}'.format(idx+1, device.vendor_name, device.product_name))
+        return hids[int(input('Select device you wish to use: '))-1]
+    else:
+        found = []
+        for device in hids:
+            if device.vendor_id == vID or device.product_id == pID:
+                found.append(device)
+        if not len(found):
+            raise LookupError('Could not find any devices with vendor id {} or product id {}'.format(vID, pID))
+        elif len(found) == 1:
+            return found[0]
+        else:
+            if result is None:
+                print('multiple devices found with vendor id {} and\\or product id {}'.format(vID, pID))
+                for idx, device in enumerate(found):
+                    print('\t{}:\t{} - {}'.format(idx+1, device.vendor_name, device.product_name))
+                return found[int(input('Select the device you wish to use: '))-1]
+            return found[result]
+
+
+def device_test(device, controller=None, delay=1):
     try:
         if device.is_plugged():
             print('device is detected')
@@ -129,7 +147,6 @@ def device_test(device, controller, delay=1):
         device.close()
         print('device closed successfully')
 
-device_test(curr_device, gcbuttons)
 buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
                          'lt': Button(10, ['lt'], False, c_name='Left Trigger'),
                          'rt': Button(22, ['rt'], False, c_name='Right Trigger'),
@@ -150,4 +167,4 @@ controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 
 gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
 
 if __name__ == '__main__':
-    pass
+    device_test(find_device(0x1234, 0xbead, 0), controller=controllers['vJoy - Gamecube'])
