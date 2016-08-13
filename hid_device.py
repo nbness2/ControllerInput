@@ -87,7 +87,8 @@ class Controller:
             if arg in ('c_name', 'product_id', 'vendor_id'):
                 setattr(self, arg, value)
 
-    def update(self, raw_data):
+    def handle(self, raw_data, **kwargs):
+        del kwargs
         data = {}
         for component in self.components.values():
             if type(component) == Stick:
@@ -138,7 +139,7 @@ def device_test(device, controller=None, delay=1):
             print('recieving input after {} seconds.'.format(delay))
             sleep(delay)
             print('start')
-            device.set_raw_data_handler(handle,  controller)
+            device.set_raw_data_handler(controller.handle)
             while device.is_plugged():
                 sleep(1)
         else:
