@@ -65,8 +65,7 @@ class Button:
                         pressed.append(self.button_values[idx])
                 if not len(pressed):
                     return ['n/a']
-                else:
-                    return pressed
+                return pressed
             except IndexError:
                 raise IOError('Extra button(s) detected. {}'.format(self.c_name))
 
@@ -138,6 +137,7 @@ def device_test(device, controller=None, delay=1):
             print('device opened successfully')
             print('recieving input after {} seconds.'.format(delay))
             sleep(delay)
+            print('start')
             device.set_raw_data_handler(handle,  controller)
             while device.is_plugged():
                 sleep(1)
