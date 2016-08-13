@@ -64,7 +64,7 @@ class Button:
                     if int(button):
                         pressed.append(self.button_values[idx])
                 if not len(pressed):
-                    return ['n/a']
+                    return (None,)
                 return pressed
             except IndexError:
                 raise IOError('Extra button(s) detected. {}'.format(self.c_name))
@@ -81,10 +81,10 @@ class Controller:
     def __init__(self, **kwargs):
         self.components = {}
         for arg, value in kwargs.items():
-            if arg in ['Sticks', 'Buttons']:
+            if arg in ('Sticks', 'Buttons'):
                 for component in value:
                     self.components[component.c_name] = component
-            if arg in ['c_name', 'product_id', 'vendor_id']:
+            if arg in ('c_name', 'product_id', 'vendor_id'):
                 setattr(self, arg, value)
 
     def update(self, raw_data):
@@ -148,23 +148,21 @@ def device_test(device, controller=None, delay=1):
         print('device closed successfully')
 
 buttonmaps = {'0xbead': {'ls': Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
-                         'lt': Button(10, ['lt'], False, c_name='Left Trigger'),
-                         'rt': Button(22, ['rt'], False, c_name='Right Trigger'),
+                         'lt': Button(10, ('lt',), False, c_name='Left Trigger'),
+                         'rt': Button(22, ('rt',), False, c_name='Right Trigger'),
                          'cs': Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick'),
                          'buttons': Button(49, 'abxyzrls', c_name='Buttons'),
                          'dpad': Button(50, 'udlr', c_name='D-pad')}}
 
 controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 66), c_name='Left Stick'),
                                                      Stick(14, 18, (60, 66), (60, 65), c_name='C-Stick')),
-                                             Buttons=(Button(10, ['lt'], False, c_name='Left Trigger'),
-                                                      Button(22, ['rt'], False, c_name='Right Trigger'),
+                                             Buttons=(Button(10, ('lt',), False, c_name='Left Trigger'),
+                                                      Button(22, ('rt',), False, c_name='Right Trigger'),
                                                       Button(49, 'abxyzrls', c_name='Buttons'),
                                                       Button(50, 'udlr', c_name='D-pad')),
                                              c_name='Gamecube Controller',
                                              product_id='0xbead',
                                              vendor_id='0x1234')}
-
-gcbuttons = ('ls', 'lt', 'rt', 'cs', 'buttons', 'dpad')
 
 if __name__ == '__main__':
     device_test(find_device(0x1234, 0xbead, 0), controller=controllers['vJoy - Gamecube'])
