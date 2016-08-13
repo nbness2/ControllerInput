@@ -114,20 +114,22 @@ def find_device(vID=None, pID=None, result=None):
         return hids[int(input('Select device you wish to use: '))-1]
     else:
         found = []
+        fc = 0
         for device in hids:
             if device.vendor_id == vID or device.product_id == pID:
                 found.append(device)
+                if fc == result:
+                    return device
+                fc += 1
         if not len(found):
             raise LookupError('Could not find any devices with vendor id {} or product id {}'.format(vID, pID))
         elif len(found) == 1:
             return found[0]
-        else:
-            if result is None:
-                print('multiple devices found with vendor id {} and\\or product id {}'.format(vID, pID))
-                for idx, device in enumerate(found):
-                    print('\t{}:\t{} - {}'.format(idx+1, device.vendor_name, device.product_name))
-                return found[int(input('Select the device you wish to use: '))-1]
-            return found[result]
+        if result is None:
+            print('multiple devices found with vendor id {} and\\or product id {}'.format(vID, pID))
+            for idx, device in enumerate(found):
+                print('\t{}:\t{} - {}'.format(idx+1, device.vendor_name, device.product_name))
+            return found[int(input('Select the device you wish to use: '))-1]
 
 
 def device_test(device, controller=None, delay=1):
@@ -166,4 +168,5 @@ controllers = {'vJoy - Gamecube': Controller(Sticks=(Stick(2, 6, (59, 65), (59, 
                                              vendor_id='0x1234')}
 
 if __name__ == '__main__':
-    device_test(find_device(0x1234, 0xbead, 0), controller=controllers['vJoy - Gamecube'])
+    device = find_device(0x1234, 0xbead, 0)
+    device_test(device, controllers['vJoy - Gamecube'])
